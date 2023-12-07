@@ -86,6 +86,7 @@ class Weather(QMainWindow, Ui_weatherApp):
                 error = 'Please choose a temperature scale'
                 self.outputLabel.setText(str(error))
                 self.outputLabel.setVisible(True)
+                self.imageLabel.setVisible(False)
 
         except requests.exceptions.HTTPError as e:
             self.outputLabel.setText(str(f"{e}"))
