@@ -7,12 +7,24 @@ class Weather(QMainWindow, Ui_weatherApp):
     GEO_API_KEY = 'f29b46cbefe1e994fbf1b88a650c086f'
     WEATHER_API_KEY = 'U79DVJVY6MZCKUSBGP4US2PAN'
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """
+        Initializes variables
+
+        :returns None
+        """
         super().__init__()
         self.setupUi(self)
         self.submitButton.clicked.connect(lambda: self.submit())
 
     def submit(self):
+        """
+        When the button is clicked all inputs are pulled and checked.
+        Then data is pulled from the API and error checked if the location
+        exists or not.
+
+        :return None
+        """
         try:
             city_input = str(self.cityInput.text().strip())
             state_input = str(self.stateInput.text().strip())
@@ -37,7 +49,8 @@ class Weather(QMainWindow, Ui_weatherApp):
                 condition = current_conditions['conditions']
                 precipitation = current_conditions['precip']
                 precipType = current_conditions['preciptype']
-                precipType = ', '.join(precipType)
+                if precipType is not None:
+                    precipType = ', '.join(map(str, precipType))
                 sunrise = current_conditions['sunrise']
                 sunset = current_conditions['sunset']
                 dateToday = date.today()
@@ -54,7 +67,8 @@ class Weather(QMainWindow, Ui_weatherApp):
                 condition = current_conditions[0].get('conditions')
                 precipitation = current_conditions[0].get('precip')
                 precipType = current_conditions[0].get('preciptype')
-                precipType = ', '.join(precipType)
+                if precipType is not None:
+                    precipType = ', '.join(map(str, precipType))
                 sunrise = current_conditions[0].get('sunrise')
                 sunset = current_conditions[0].get('sunset')
                 dateToday = current_conditions[0].get('datetime')
@@ -63,9 +77,11 @@ class Weather(QMainWindow, Ui_weatherApp):
                 print(current_conditions)
 
             if self.cRadioButton.isChecked():
-                self.outputLabel.setText(str(f"\t\tDate: {dateToday}\n Temperature: {self.celciusConversion(temp):.1f}°\t Condition: {condition}\n High: {self.celciusConversion(tempMax):.1f}°\t\t Precip: {precipitation}\n Low: {self.celciusConversion(tempMin):.1f}°\t\t Precip Type: {precipType}\n Sunrise: {self.timeConversion(sunrise)}\t Sunset: {self.timeConversion(sunset)}"))
+                self.outputLabel.setText(
+                    str(f"\t\tDate: {dateToday}\n Temperature: {self.celciusConversion(temp):.1f}°\t Condition: {condition}\n High: {self.celciusConversion(tempMax):.1f}°\t\t Precip: {precipitation}\n Low: {self.celciusConversion(tempMin):.1f}°\t\t Precip Type: {precipType}\n Sunrise: {self.timeConversion(sunrise)}\t Sunset: {self.timeConversion(sunset)}"))
             elif self.fRadioButton.isChecked():
-                self.outputLabel.setText(str(f"\t\tDate: {dateToday}\nTemperature: {temp:.1f}°\t Condition: {condition}\n High: {tempMax:.1f}°\t\t Precip: {precipitation}\n Low: {tempMin:.1f}°\t\t Precip Type: {precipType}\n Sunrise: {self.timeConversion(sunrise)}\t Sunset: {self.timeConversion(sunset)}"))
+                self.outputLabel.setText(
+                    str(f"\t\tDate: {dateToday}\nTemperature: {temp:.1f}°\t Condition: {condition}\n High: {tempMax:.1f}°\t\t Precip: {precipitation}\n Low: {tempMin:.1f}°\t\t Precip Type: {precipType}\n Sunrise: {self.timeConversion(sunrise)}\t Sunset: {self.timeConversion(sunset)}"))
             else:
                 error = 'Please choose a temperature scale'
                 self.outputLabel.setText(str(error))
@@ -74,23 +90,41 @@ class Weather(QMainWindow, Ui_weatherApp):
         except requests.exceptions.HTTPError as e:
             self.outputLabel.setText(str(f"{e}"))
             self.outputLabel.setVisible(True)
+            self.imageLabel.setVisible(False)
         except ValueError:
             error = "Minimum required: input a city and a country."
             self.outputLabel.setText(f"{error}")
             self.outputLabel.setVisible(True)
+            self.imageLabel.setVisible(False)
         finally:
             self.clearInput()
             self.cityInput.setFocus()
 
     def celciusConversion(self, temp) -> float:
-        return (temp - 32) * (5/9)
+        """
+        Converts values from farenheit to celcius
+
+        :return Float
+        """
+        return (temp - 32) * (5 / 9)
 
     def timeConversion(self, time) -> str:
+        """
+        Converts time from 24hr to 12hr format
+
+        :return String
+        """
         time_obj = datetime.strptime(time, '%H:%M:%S')
         time12 = time_obj.strftime('%I:%M %p')
         return time12
 
     def imageDisplayerCurrent(self, data) -> None:
+        """
+         Displays image based on the icon from the "current" library
+         in the API
+
+         :return None
+         """
         if data.get('icon') == "clear-day":
             self.displayImage(self.imageLabel, "sunny.png")
             print('sunny')
@@ -116,8 +150,13 @@ class Weather(QMainWindow, Ui_weatherApp):
         elif data.get('icon') == 'fog':
             self.displayImage(self.imageLabel, 'fog.png')
 
-
     def imageDisplayer(self, data) -> None:
+        """
+        Displays an image based on the icon from the "days" library in
+        the weather API
+
+        :return None
+        """
         if data[0].get('icon') == "clear-day":
             self.displayImage(self.imageLabel, "sunny.png")
             print('sunny')
@@ -143,14 +182,14 @@ class Weather(QMainWindow, Ui_weatherApp):
         elif data[0].get('icon') == 'fog':
             self.displayImage(self.imageLabel, 'fog.png')
 
-    def clearInput(self):
+    def clearInput(self) -> None:
+        """
+          This function clears all the input boxes when the button is pressed
+
+          :return None
+          """
         self.cityInput.clear()
         self.countryInput.clear()
         self.stateInput.clear()
         self.cRadioButton.setChecked(False)
         self.fRadioButton.setChecked(False)
-
-
-
-
-
