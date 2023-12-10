@@ -47,7 +47,7 @@ class Weather(QMainWindow, Ui_weatherApp):
                 tempMax = days_data[0].get('tempmax')
                 tempMin = days_data[0].get('tempmin')
                 condition = current_conditions['conditions']
-                precipitation = current_conditions['precip']
+                precipitation = current_conditions['precip'] * 100
                 precipType = current_conditions['preciptype']
                 if precipType is not None:
                     precipType = ', '.join(map(str, precipType))
@@ -65,7 +65,7 @@ class Weather(QMainWindow, Ui_weatherApp):
                 tempMax = current_conditions[0].get('tempmax')
                 tempMin = current_conditions[0].get('tempmin')
                 condition = current_conditions[0].get('conditions')
-                precipitation = current_conditions[0].get('precip')
+                precipitation = current_conditions[0].get('precip') * 100
                 precipType = current_conditions[0].get('preciptype')
                 if precipType is not None:
                     precipType = ', '.join(map(str, precipType))
@@ -78,10 +78,10 @@ class Weather(QMainWindow, Ui_weatherApp):
 
             if self.cRadioButton.isChecked():
                 self.outputLabel.setText(
-                    str(f"\t\tDate: {dateToday}\n Temperature: {self.celciusConversion(temp):.1f}°\t Condition: {condition}\n High: {self.celciusConversion(tempMax):.1f}°\t\t Precip: {precipitation}\n Low: {self.celciusConversion(tempMin):.1f}°\t\t Precip Type: {precipType}\n Sunrise: {self.timeConversion(sunrise)}\t Sunset: {self.timeConversion(sunset)}"))
+                    str(f"\t\tDate: {dateToday}\n Temperature: {self.celciusConversion(temp):.1f}°\t Condition: {condition}\n High: {self.celciusConversion(tempMax):.1f}°\t\t Precip: {precipitation:.1f}%\n Low: {self.celciusConversion(tempMin):.1f}°\t\t Precip Type: {precipType}\n Sunrise: {self.timeConversion(sunrise)}\t Sunset: {self.timeConversion(sunset)}"))
             elif self.fRadioButton.isChecked():
                 self.outputLabel.setText(
-                    str(f"\t\tDate: {dateToday}\nTemperature: {temp:.1f}°\t Condition: {condition}\n High: {tempMax:.1f}°\t\t Precip: {precipitation}\n Low: {tempMin:.1f}°\t\t Precip Type: {precipType}\n Sunrise: {self.timeConversion(sunrise)}\t Sunset: {self.timeConversion(sunset)}"))
+                    str(f"\t\tDate: {dateToday}\nTemperature: {temp:.1f}°\t Condition: {condition}\n High: {tempMax:.1f}°\t\t Precip: {precipitation:.1f}%\n Low: {tempMin:.1f}°\t\t Precip Type: {precipType}\n Sunrise: {self.timeConversion(sunrise)}\t Sunset: {self.timeConversion(sunset)}"))
             else:
                 error = 'Please choose a temperature scale'
                 self.outputLabel.setText(str(error))
