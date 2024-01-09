@@ -47,7 +47,11 @@ class Weather(QMainWindow, Ui_weatherApp):
                 tempMax = days_data[0].get('tempmax')
                 tempMin = days_data[0].get('tempmin')
                 condition = current_conditions['conditions']
-                precipitation = current_conditions['precip'] * 100
+                precipitation = days_data[0].get('precip')
+                if precipitation is not None:
+                    precipitation *= 100
+                else:
+                    precipitation = 0.0
                 precipType = current_conditions['preciptype']
                 if precipType is not None:
                     precipType = ', '.join(map(str, precipType))
@@ -61,11 +65,16 @@ class Weather(QMainWindow, Ui_weatherApp):
             else:
                 weather = weather_data.json()
                 current_conditions = weather.get('days', [])
+                #print(current_conditions)
                 temp = current_conditions[0].get('temp')
                 tempMax = current_conditions[0].get('tempmax')
                 tempMin = current_conditions[0].get('tempmin')
                 condition = current_conditions[0].get('conditions')
-                precipitation = current_conditions[0].get('precip') * 100
+                precipitation = current_conditions[0].get('precip')
+                if precipitation is not None:
+                    precipitation *= 100
+                else:
+                    precipitation = 0.0
                 precipType = current_conditions[0].get('preciptype')
                 if precipType is not None:
                     precipType = ', '.join(map(str, precipType))
